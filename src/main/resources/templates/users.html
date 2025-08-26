@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Список пользователей</title>
+</head>
+<body>
+<h1>Список пользователей:</h1>
+
+<!-- Выводим таблицу с информацией о пользователях -->
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Имя пользователя</th>
+        <th>Пароль</th>
+        <th>Роли</th>
+        <th>Action</th>
+    </tr>
+    <!-- Проходим по списку пользователей, переданному из контроллера -->
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.password}">******</td> <!-- Скрываем реальный пароль -->
+        <td>
+            <!-- Проходим по каждому элементу набора ролей -->
+            <ul>
+                <li th:each="role : ${user.roles}" th:text="${role.name}"></li>
+            </ul>
+        </td>
+        <td>
+            <div style="display:flex; gap:2px;"> <!-- Контейнер с флексбоксом -->
+                <button th:onclick="|window.location.href='@{admin/editUser(id=${user.id})}'|">Update</button>
+                <form action="/admin/deleteUser" method="post">
+                    <input type="hidden" name="id" th:value="${user.id}" />
+                    <input type="submit" value="Delete">
+                </form>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<br>
+
+<input type="button" value="AddUser"
+       onclick="window.location.href = 'admin/addNewUser'"/>
+<br>
+<br>
+<form th:action="@{'/logout'}" method="post">
+
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>
