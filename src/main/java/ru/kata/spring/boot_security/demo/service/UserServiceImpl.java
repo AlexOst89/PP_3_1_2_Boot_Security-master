@@ -3,23 +3,19 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.dao.UserRepository;
-import ru.kata.spring.boot_security.demo.dao.RolesRepository;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.model.Role;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImp implements UserService {
+public class UserServiceImpl implements UserService {
 
    private final UserRepository userRepository;
-   private final RolesRepository rolesRepository;
 
    @Autowired
-   public UserServiceImp(UserRepository userRepository, RolesRepository rolesRepository) {
+   public UserServiceImpl(UserRepository userRepository) {
       this.userRepository = userRepository;
-      this.rolesRepository = rolesRepository;
    }
 
    @Override
@@ -28,7 +24,7 @@ public class UserServiceImp implements UserService {
    }
 
    @Override
-   public void saveUser(User user) {
+   public void saveUser(User user, List<Long> selectedRolesIds) {
       userRepository.save(user);
    }
 
@@ -44,7 +40,7 @@ public class UserServiceImp implements UserService {
    }
 
    @Override
-   public void updateUser(int id, User updatedUser) {
+   public void updateUser(int id, User updatedUser, List<Long> selectedRolesIds) {
       User existingUser = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
 
       existingUser.setUsername(updatedUser.getUsername());
@@ -56,13 +52,5 @@ public class UserServiceImp implements UserService {
       }
 
       userRepository.save(existingUser);
-   }
-
-   public List<Role> getAllRoles() {
-      return rolesRepository.findAll();
-   }
-
-   public Role getRole(long id) {
-      return rolesRepository.findById(id).orElse(null);
    }
 }
